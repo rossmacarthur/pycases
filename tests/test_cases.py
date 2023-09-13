@@ -58,8 +58,32 @@ def test_to_camel():
         assert cases.to_camel(s) == camel
 
 
+def test_to_camel_with_acronyms():
+    assert (
+        cases.to_camel("xml_http_request", acronyms={"xml": "XML"}) == "xmlHttpRequest"
+    )
+    assert (
+        cases.to_camel("xml_http_request", acronyms={"http": "HTTP"})
+        == "xmlHTTPRequest"
+    )
+
+
 def test_to_pascal():
     assert cases.to_pascal("test case") == "TestCase"
+
+
+def test_to_pascal_with_acronyms():
+    assert (
+        cases.to_pascal("xml_http_request", acronyms={"xml": "XML"}) == "XMLHttpRequest"
+    )
+    assert (
+        cases.to_pascal("xml_http_request", acronyms={"xml": "XML", "http": "HTTP"})
+        == "XMLHTTPRequest"
+    )
+    assert (
+        cases.to_pascal("xml_http_request", acronyms={"xml": "XML", "http": "Http"})
+        == "XMLHttpRequest"
+    )
 
 
 def test_to_snake():
@@ -83,12 +107,42 @@ def test_to_train():
     assert cases.to_train("test case") == "Test-Case"
 
 
+def test_to_train_with_acronyms():
+    assert (
+        cases.to_train("xml_http_request", acronyms={"xml": "XML"})
+        == "XML-Http-Request"
+    )
+    assert (
+        cases.to_train("xml_http_request", acronyms={"xml": "XML", "http": "HTTP"})
+        == "XML-HTTP-Request"
+    )
+    assert (
+        cases.to_train("xml_http_request", acronyms={"xml": "XML", "http": "Http"})
+        == "XML-Http-Request"
+    )
+
+
 def test_to_lower():
     assert cases.to_lower("Test-case") == "test case"
 
 
 def test_to_title():
     assert cases.to_title("Test-case") == "Test Case"
+
+
+def test_to_title_with_acronyms():
+    assert (
+        cases.to_title("xml_http_request", acronyms={"xml": "XML"})
+        == "XML Http Request"
+    )
+    assert (
+        cases.to_title("xml_http_request", acronyms={"xml": "XML", "http": "HTTP"})
+        == "XML HTTP Request"
+    )
+    assert (
+        cases.to_title("xml_http_request", acronyms={"xml": "XML", "http": "Http"})
+        == "XML Http Request"
+    )
 
 
 def test_to_upper():

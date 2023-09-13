@@ -10,7 +10,7 @@ enum State {
 }
 
 // Transform reconstructs the string using the given functions.
-pub fn transform<B, W>(s: &str, buf: &mut B, mut word_fn: W, delim: &str) -> fmt::Result
+pub fn transform_impl<B, W>(s: &str, buf: &mut B, mut word_fn: W, delim: &str) -> fmt::Result
 where
     B: Write,
     W: FnMut(&mut B, &str) -> fmt::Result,

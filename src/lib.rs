@@ -1,35 +1,48 @@
-mod transform;
+mod core;
 
 use std::fmt;
+use std::fmt::Write;
 
 use pyo3::prelude::*;
+use pyo3::types::PyDict;
 
-use crate::transform::{fmt_lower, fmt_title, fmt_upper, transform};
+use crate::core::{fmt_lower, fmt_title, fmt_upper, transform_impl};
 
 /// Convert a string to 'camelCase'.
 #[pyfunction]
-fn to_camel(s: &str) -> String {
-    let mut buf = String::with_capacity(s.len());
-
+#[pyo3(signature = (s, /, acronyms = None))]
+fn to_camel(s: &str, acronyms: Option<&PyDict>) -> String {
     let mut first = true;
     let word_fn = |buf: &mut String, s: &str| -> fmt::Result {
         if first {
             first = false;
             fmt_lower(buf, s)
         } else {
-            fmt_title(buf, s)
+            match get_acronym(s, acronyms) {
+                Some(acronym) => write!(buf, "{}", acronym),
+                None => fmt_title(buf, s),
+            }
         }
     };
 
-    transform(s, &mut buf, word_fn, "").unwrap();
+    let mut buf = String::with_capacity(s.len());
+    transform_impl(s, &mut buf, word_fn, "").unwrap();
     buf
 }
 
 /// Convert a string to 'PascalCase'.
 #[pyfunction]
-fn to_pascal(s: &str) -> String {
+#[pyo3(signature = (s, /, acronyms = None))]
+fn to_pascal(s: &str, acronyms: Option<&PyDict>) -> String {
+    let word_fn = |buf: &mut String, s: &str| -> fmt::Result {
+        match get_acronym(s, acronyms) {
+            Some(acronym) => write!(buf, "{}", acronym),
+            None => fmt_title(buf, s),
+        }
+    };
+
     let mut buf = String::with_capacity(s.len());
-    transform(s, &mut buf, fmt_title, "").unwrap();
+    transform_impl(s, &mut buf, word_fn, "").unwrap();
     buf
 }
 
@@ -37,7 +50,7 @@ fn to_pascal(s: &str) -> String {
 #[pyfunction]
 fn to_snake(s: &str) -> String {
     let mut buf = String::with_capacity(s.len());
-    transform(s, &mut buf, fmt_lower, "_").unwrap();
+    transform_impl(s, &mut buf, fmt_lower, "_").unwrap();
     buf
 }
 
@@ -45,7 +58,7 @@ fn to_snake(s: &str) -> String {
 #[pyfunction]
 fn to_screaming_snake(s: &str) -> String {
     let mut buf = String::with_capacity(s.len());
-    transform(s, &mut buf, fmt_upper, "_").unwrap();
+    transform_impl(s, &mut buf, fmt_upper, "_").unwrap();
     buf
 }
 
@@ -53,7 +66,7 @@ fn to_screaming_snake(s: &str) -> String {
 #[pyfunction]
 fn to_kebab(s: &str) -> String {
     let mut buf = String::with_capacity(s.len());
-    transform(s, &mut buf, fmt_lower, "-").unwrap();
+    transform_impl(s, &mut buf, fmt_lower, "-").unwrap();
     buf
 }
 
@@ -61,15 +74,23 @@ fn to_kebab(s: &str) -> String {
 #[pyfunction]
 fn to_screaming_kebab(s: &str) -> String {
     let mut buf = String::with_capacity(s.len());
-    transform(s, &mut buf, fmt_upper, "-").unwrap();
+    transform_impl(s, &mut buf, fmt_upper, "-").unwrap();
     buf
 }
 
 /// Convert a string to 'Train-Case'.
 #[pyfunction]
-fn to_train(s: &str) -> String {
+#[pyo3(signature = (s, /, acronyms = None))]
+fn to_train(s: &str, acronyms: Option<&PyDict>) -> String {
+    let word_fn = |buf: &mut String, s: &str| -> fmt::Result {
+        match get_acronym(s, acronyms) {
+            Some(acronym) => write!(buf, "{}", acronym),
+            None => fmt_title(buf, s),
+        }
+    };
+
     let mut buf = String::with_capacity(s.len());
-    transform(s, &mut buf, fmt_title, "-").unwrap();
+    transform_impl(s, &mut buf, word_fn, "-").unwrap();
     buf
 }
 
@@ -77,15 +98,23 @@ fn to_train(s: &str) -> String {
 #[pyfunction]
 fn to_lower(s: &str) -> String {
     let mut buf = String::with_capacity(s.len());
-    transform(s, &mut buf, fmt_lower, " ").unwrap();
+    transform_impl(s, &mut buf, fmt_lower, " ").unwrap();
     buf
 }
 
 /// Convert a string to 'Title Case'.
 #[pyfunction]
-fn to_title(s: &str) -> String {
+#[pyo3(signature = (s, /, acronyms = None))]
+fn to_title(s: &str, acronyms: Option<&PyDict>) -> String {
+    let word_fn = |buf: &mut String, s: &str| -> fmt::Result {
+        match get_acronym(s, acronyms) {
+            Some(acronym) => write!(buf, "{}", acronym),
+            None => fmt_title(buf, s),
+        }
+    };
+
     let mut buf = String::with_capacity(s.len());
-    transform(s, &mut buf, fmt_title, " ").unwrap();
+    transform_impl(s, &mut buf, word_fn, " ").unwrap();
     buf
 }
 
@@ -93,8 +122,15 @@ fn to_title(s: &str) -> String {
 #[pyfunction]
 fn to_upper(s: &str) -> String {
     let mut buf = String::with_capacity(s.len());
-    transform(s, &mut buf, fmt_upper, " ").unwrap();
+    transform_impl(s, &mut buf, fmt_upper, " ").unwrap();
     buf
+}
+
+fn get_acronym<'a>(s: &str, acronyms: Option<&'a PyDict>) -> Option<&'a str> {
+    acronyms
+        .as_ref()
+        .and_then(|d| d.get_item(s.to_lowercase()))
+        .and_then(|v| v.extract::<&str>().ok())
 }
 
 /// A case conversion library with Unicode support, implemented in Rust.
