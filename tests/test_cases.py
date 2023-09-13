@@ -37,6 +37,8 @@ TESTS = [
     ("XΣXΣ baﬄe", "xσxσ_baﬄe", "xσxσBaﬄe"),
     ("XMLHttpRequest", "xml_http_request", "xmlHttpRequest"),
     ("FIELD_NAME11", "field_name11", "fieldName11"),
+    ("FIELD_NAME_11", "field_name_11", "fieldName11"),
+    ("FIELD_NAME_1", "field_name_1", "fieldName1"),
     ("99BOTTLES", "99bottles", "99bottles"),
     ("FieldNamE11", "field_nam_e11", "fieldNamE11"),
     ("abc123def456", "abc123def456", "abc123def456"),

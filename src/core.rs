@@ -1,7 +1,7 @@
 use std::fmt;
 use std::fmt::Write;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq)]
 enum State {
     Unknown,
     Delims,
@@ -73,6 +73,8 @@ where
             state = State::Lower;
         } else if is_upper {
             state = State::Upper;
+        } else if state == State::Delims {
+            state = State::Unknown;
         }
     }
 
