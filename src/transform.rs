@@ -9,8 +9,20 @@ enum State {
     Upper,
 }
 
-// Transform reconstructs the string using the given functions.
-pub fn transform_impl<B, W>(s: &str, buf: &mut B, mut word_fn: W, delim: &str) -> fmt::Result
+/// Transforms reconstructs the string into a new string using the given
+/// functions.
+pub fn to_string<F>(s: &str, word_fn: F, delim: &str) -> String
+where
+    F: FnMut(&mut String, &str) -> fmt::Result,
+{
+    let mut buf = String::with_capacity(s.len());
+    transform(s, &mut buf, word_fn, delim).unwrap();
+    buf
+}
+
+/// Transform reconstructs the string into the given buffer using the given
+/// functions.
+pub fn transform<B, W>(s: &str, buf: &mut B, mut word_fn: W, delim: &str) -> fmt::Result
 where
     B: Write,
     W: FnMut(&mut B, &str) -> fmt::Result,
