@@ -36,16 +36,14 @@ where
     // the current state of the word boundary machine
     let mut state = State::Unknown;
 
-    let mut write = |w0: usize, w1: Option<usize>| -> fmt::Result {
-        if let Some(w1) = w1 {
-            if w1 - w0 > 0 {
-                if first {
-                    first = false;
-                } else {
-                    buf.write_str(delim)?;
-                }
-                word_fn(buf, &s[w0..w1])?;
+    let mut write = |w0: usize, w1: usize| -> fmt::Result {
+        if w1 - w0 > 0 {
+            if first {
+                first = false;
+            } else {
+                buf.write_str(delim)?;
             }
+            word_fn(buf, &s[w0..w1])?;
         }
         Ok(())
     };
@@ -64,18 +62,20 @@ where
 
         match state {
             State::Delims => {
-                write(w0, w1)?;
+                if let Some(w1) = w1 {
+                    write(w0, w1)?;
+                }
                 w0 = i;
                 w1 = None;
             }
             State::Lower if is_upper => {
-                write(w0, Some(i))?;
+                write(w0, i)?;
                 w0 = i;
             }
             State::Upper
                 if is_upper && matches!(iter.peek(), Some((_, c2)) if c2.is_lowercase()) =>
             {
-                write(w0, Some(i))?;
+                write(w0, i)?;
                 w0 = i;
             }
             _ => {}
@@ -91,8 +91,12 @@ where
     }
 
     match state {
-        State::Delims => write(w0, w1)?,
-        _ => write(w0, Some(s.len()))?,
+        State::Delims => {
+            if let Some(w1) = w1 {
+                write(w0, w1)?;
+            }
+        }
+        _ => write(w0, s.len())?,
     }
 
     Ok(())
