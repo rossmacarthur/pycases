@@ -1,5 +1,10 @@
 # pycases
 
+[![PyPI version](https://badgers.space/pypi/version/pycases)](https://pypi.org/project/pycases)
+[![License](https://badgers.space/github/license/rossmacarthur/pycases)](https://github.com/rossmacarthur/pycases#license)
+[![Build Status](https://badgers.space/github/checks/rossmacarthur/pycases/trunk?label=build)](https://github.com/rossmacarthur/pycases/actions/workflows/build.yaml)
+
+
 A case conversion library for Python with Unicode support.
 
 
