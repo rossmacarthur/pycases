@@ -4,9 +4,16 @@
 [![License](https://badgers.space/github/license/rossmacarthur/pycases)](https://github.com/rossmacarthur/pycases#license)
 [![Build Status](https://badgers.space/github/checks/rossmacarthur/pycases/trunk?label=build)](https://github.com/rossmacarthur/pycases/actions/workflows/build.yaml)
 
-A case conversion library for Python with Unicode support.
+A case conversion library for Python.
 
-The currently supported cases are:
+## Features
+
+- Automatic case detection, no need to specify the input case
+- Extremely fast, written in Rust ✨
+- Support for Unicode characters
+- Support for providing acronyms in title case
+
+**Supported cases**
 
 | Function                      | Output                 |
 | :---------------------------- | :--------------------- |
@@ -70,6 +77,21 @@ which is a mapping of lowercase words to their output. For example:
 >>> cases.to_pascal("xml_http_request", acronyms={"xml": "XML", "http": "HTTP"})
 'XMLHTTPRequest'
 ```
+
+## Benchmarks
+
+A simple benchmark against various other libraries is provided in
+[./benches](./benches). The following table shows the results when run on my
+Macbook M2 Max.
+
+| Library         |   Min (µs) |   Max (µs) |  Mean (µs) |
+| --------------- | ---------: | ---------: | ---------: |
+| cases           |    21.3750 |    49.6670 |    22.1288 |
+| pure python     |    62.8750 |   186.9580 |    66.2344 |
+| regex           |    80.8330 |   201.2500 |    87.0549 |
+| stringcase      |   101.8340 |   204.9590 |   108.6977 |
+| inflection      |   230.2920 |   581.4580 |   253.9194 |
+| case-conversion | 1,431.7920 | 1,745.7080 | 1,506.2268 |
 
 ## License
 
