@@ -4,9 +4,7 @@
 [![License](https://badgers.space/github/license/rossmacarthur/pycases)](https://github.com/rossmacarthur/pycases#license)
 [![Build Status](https://badgers.space/github/checks/rossmacarthur/pycases/trunk?label=build)](https://github.com/rossmacarthur/pycases/actions/workflows/build.yaml)
 
-
 A case conversion library for Python with Unicode support.
-
 
 The currently supported cases are:
 
@@ -42,19 +40,29 @@ cases.to_snake("XMLHttpRequest") # returns "xml_http_request"
 
 ## Details
 
+Each of the provided functions using the same underlying implementation which
+does the following:
+- Divide the input string into words
+- Convert each word as required
+- Join the words back together optionally with a separator
+
 Word boundaries are defined as follows:
 
-- A set of consecutive Unicode non-letter/number
-  e.g. 'foo _bar' is two words (foo and bar)
+- A set of consecutive Unicode non-letter and non-number characters.
 
-- A transition from a lowercase letter to an uppercase letter
-  e.g. fooBar is two words (foo and Bar)
+  For example: 'foo _bar' is two words (foo and bar)
 
-  - The second last uppercase letter in a word with multiple uppercase letters
-  e.g. FOOBar is two words (FOO and Bar)
+- A transition from a lowercase letter to an uppercase letter.
 
-Some functions accept an optional `acronyms` argument, which is a mapping of
-lowercase words to their output. For example:
+  For example: fooBar is two words (foo and Bar)
+
+- A transition from multiple uppercase letters to a single uppercase letter
+  followed by lowercase letters.
+
+  For example: FOOBar is two words (FOO and Bar)
+
+Functions where the transform is "title" accept an optional `acronyms` argument,
+which is a mapping of lowercase words to their output. For example:
 
 ```python
 >>> cases.to_pascal("xml_http_request", acronyms={"xml": "XML"})

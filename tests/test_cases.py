@@ -1,4 +1,8 @@
+import re
+import os
+
 import cases
+import pytest
 
 TESTS = [
     ("", "", ""),
@@ -149,3 +153,18 @@ def test_to_title_with_acronyms():
 
 def test_to_upper():
     assert cases.to_upper("test case") == "TEST CASE"
+
+
+def examples() -> list[tuple[str, str]]:
+    pyi_file = os.path.join(os.path.dirname(__file__), "..", "cases", "__init__.pyi")
+    with open(pyi_file) as f:
+        contents = f.read()
+    examples = re.findall(r"^\s*>>> (.*)\n\s*(.*)$", contents, re.MULTILINE)
+    assert len(examples) == 15
+    return list(examples)
+
+
+@pytest.mark.parametrize("case", examples())
+def test_doc_example(case: tuple[str, str]):
+    code, expected = case
+    exec(f"""result = {code}\nassert result == {expected}""")
