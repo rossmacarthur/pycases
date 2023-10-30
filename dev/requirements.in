@@ -1,0 +1,7 @@
+ruff
+pytest
+pytest-benchmark
+
+case_conversion
+inflection
+stringcase

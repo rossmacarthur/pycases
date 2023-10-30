@@ -160,7 +160,7 @@ def examples() -> list[tuple[str, str]]:
     with open(pyi_file) as f:
         contents = f.read()
     examples = re.findall(r"^\s*>>> (.*)\n\s*(.*)$", contents, re.MULTILINE)
-    assert len(examples) == 15
+    assert len(examples) == 14
     return list(examples)
 
 
