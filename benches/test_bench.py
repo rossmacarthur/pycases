@@ -1,8 +1,3 @@
-import re
-import cases
-import inflection
-import case_conversion
-import stringcase
 from pytest_benchmark.fixture import BenchmarkFixture
 
 
@@ -12,31 +7,54 @@ EXPECT = "this_is_a_camel_case_string" * LEN
 
 
 def test_bench_to_snake_pure_python(benchmark: BenchmarkFixture):
-    def camel_to_snake(s):
+    def to_snake(s: str) -> str:
         return "".join(["_" + c.lower() if c.isupper() else c for c in s]).lstrip("_")
 
-    assert benchmark(camel_to_snake, INPUT) == EXPECT
+    assert benchmark(to_snake, INPUT) == EXPECT
 
 
-def test_bench_to_snake_regex(benchmark: BenchmarkFixture):
+def test_bench_to_snake_python_re(benchmark: BenchmarkFixture):
+    import re
+
     pattern = re.compile(r"(?<!^)(?=[A-Z])")
 
-    def camel_to_snake(s):
+    def to_snake(s: str) -> str:
         return pattern.sub("_", s).lower()
 
-    assert benchmark(camel_to_snake, INPUT) == EXPECT
+    assert benchmark(to_snake, INPUT) == EXPECT
+
 
 def test_bench_to_snake_cases(benchmark: BenchmarkFixture):
-    assert benchmark(cases.to_snake, INPUT) == EXPECT
+    from cases import to_snake
+
+    assert benchmark(to_snake, INPUT) == EXPECT
 
 
 def test_bench_to_snake_caseconversion(benchmark: BenchmarkFixture):
-    assert benchmark(case_conversion.snakecase, INPUT) == EXPECT
+    from case_conversion import snakecase as to_snake
+
+    assert benchmark(to_snake, INPUT) == EXPECT
 
 
 def test_bench_to_snake_inflection(benchmark: BenchmarkFixture):
-    assert benchmark(inflection.underscore, INPUT) == EXPECT
+    from inflection import underscore as to_snake
+
+    assert benchmark(to_snake, INPUT) == EXPECT
+
+
+def test_bench_to_snake_pydantic(benchmark: BenchmarkFixture):
+    from pydantic.alias_generators import to_snake
+
+    assert benchmark(to_snake, INPUT) == EXPECT
+
+
+def test_bench_to_snake_pyheck(benchmark: BenchmarkFixture):
+    from pyheck import snake as to_snake
+
+    assert benchmark(to_snake, INPUT) == EXPECT
 
 
 def test_bench_to_snake_stringcase(benchmark: BenchmarkFixture):
-    assert benchmark(stringcase.snakecase, INPUT) == EXPECT
+    from stringcase import snakecase as to_snake
+
+    assert benchmark(to_snake, INPUT) == EXPECT

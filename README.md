@@ -84,14 +84,16 @@ A simple benchmark against various other libraries is provided in
 [./benches](./benches). The following table shows the results when run on my
 Macbook M2 Max.
 
-| Library         |   Min (µs) |   Max (µs) |  Mean (µs) |
-| --------------- | ---------: | ---------: | ---------: |
-| cases           |    21.3750 |    49.6670 |    22.1288 |
-| pure python     |    62.8750 |   186.9580 |    66.2344 |
-| regex           |    80.8330 |   201.2500 |    87.0549 |
-| stringcase      |   101.8340 |   204.9590 |   108.6977 |
-| inflection      |   230.2920 |   581.4580 |   253.9194 |
-| case-conversion | 1,431.7920 | 1,745.7080 | 1,506.2268 |
+| Library                   |  Min (µs) |  Max (µs) |     Mean (µs) |
+| :------------------------ | --------: | --------: | ------------: |
+| cases                     |    26.666 |   176.834 |    **30.909** |
+| pyheck                    |    51.000 |   131.416 |    **53.565** |
+| pure python               |    63.583 |   108.125 |    **65.075** |
+| re                        |    81.916 |   171.000 |    **87.856** |
+| stringcase                |    99.250 |   222.292 |   **102.197** |
+| pydantic.alias_generators |   182.000 |   304.458 |   **189.063** |
+| inflection                |   229.750 |   360.792 |   **239.153** |
+| caseconversion            | 1,430.042 | 1,838.375 | **1,559.019** |
 
 ## License
 
