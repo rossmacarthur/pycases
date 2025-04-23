@@ -1,8 +1,9 @@
-maturin
+setuptools
 ruff
 pytest
 pytest-benchmark
 
+py-anycase
 case_conversion
 inflection
 pydantic

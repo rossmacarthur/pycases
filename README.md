@@ -1,3 +1,10 @@
+# Deprecated
+
+- This repository was merged into [anycase](https://github.com/rossmacarthur/anycase), and is now published as [`py-anycase`] on PyPI
+- This package now simply re-exports the [`py-anycase`] package.
+
+[`py-anycase`]: https://github.com/rossmacarthur/anycase/tree/trunk/python
+
 # pycases
 
 [![PyPI version](https://badgers.space/pypi/version/pycases)](https://pypi.org/project/pycases)
@@ -28,7 +35,6 @@ A case conversion library for Python.
 | `cases.to_title(s)`           | `Title Case`           |
 | `cases.to_upper(s)`           | `UPPER CASE`           |
 
-
 ## Getting started
 
 Install using
@@ -44,56 +50,6 @@ import cases
 
 cases.to_snake("XMLHttpRequest") # returns "xml_http_request"
 ```
-
-## Details
-
-Each of the provided functions using the same underlying implementation which
-does the following:
-- Divide the input string into words
-- Convert each word as required
-- Join the words back together optionally with a separator
-
-Word boundaries are defined as follows:
-
-- A set of consecutive Unicode non-letter and non-number characters.
-
-  For example: 'foo _bar' is two words (foo and bar)
-
-- A transition from a lowercase letter to an uppercase letter.
-
-  For example: fooBar is two words (foo and Bar)
-
-- A transition from multiple uppercase letters to a single uppercase letter
-  followed by lowercase letters.
-
-  For example: FOOBar is two words (FOO and Bar)
-
-Functions where the transform is "title" accept an optional `acronyms` argument,
-which is a mapping of lowercase words to their output. For example:
-
-```python
->>> cases.to_pascal("xml_http_request", acronyms={"xml": "XML"})
-'XMLHttpRequest'
->>> cases.to_pascal("xml_http_request", acronyms={"xml": "XML", "http": "HTTP"})
-'XMLHTTPRequest'
-```
-
-## Benchmarks
-
-A simple benchmark against various other libraries is provided in
-[./benches](./benches). The following table shows the results when run on my
-Macbook M2 Max.
-
-| Library                   |  Min (µs) |  Max (µs) |     Mean (µs) |
-| :------------------------ | --------: | --------: | ------------: |
-| cases                     |    26.666 |   176.834 |    **30.909** |
-| pyheck                    |    51.000 |   131.416 |    **53.565** |
-| pure python               |    63.583 |   108.125 |    **65.075** |
-| re                        |    81.916 |   171.000 |    **87.856** |
-| stringcase                |    99.250 |   222.292 |   **102.197** |
-| pydantic.alias_generators |   182.000 |   304.458 |   **189.063** |
-| inflection                |   229.750 |   360.792 |   **239.153** |
-| caseconversion            | 1,430.042 | 1,838.375 | **1,559.019** |
 
 ## License
 
